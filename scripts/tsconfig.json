@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "ES2024",
+    "lib": ["ES2024"],
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "outDir": "../dist/scripts",
+    "rootDir": ".",
+    "noImplicitAny": false
+  },
+  "include": ["./**/*.ts"]
+}

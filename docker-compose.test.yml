@@ -1,0 +1,53 @@
+# ============================================================================
+# SMART_RETAIL - Docker Compose (Testing)
+# ============================================================================
+# Entorno aislado para tests E2E.
+#
+# Uso:
+#   docker compose -f docker-compose.test.yml up -d
+#   pnpm test:e2e
+#   docker compose -f docker-compose.test.yml down -v
+# ============================================================================
+
+services:
+  # ─────────────────────────────────────────────────────────────────────────
+  # PostgreSQL Test Instance
+  # ─────────────────────────────────────────────────────────────────────────
+  postgres-test:
+    image: postgres:17-alpine
+    container_name: smart-retail-postgres-test
+    environment:
+      POSTGRES_USER: smartRetail
+      POSTGRES_PASSWORD: smart_retail_test
+      POSTGRES_DB: smart_retail_test
+    ports:
+      - "5433:5432"
+    tmpfs:
+      - /var/lib/postgresql/data # Datos en memoria para tests rápidos
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U smartRetail -d smart_retail_test"]
+      interval: 2s
+      timeout: 5s
+      retries: 10
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # Redis Test Instance
+  # ─────────────────────────────────────────────────────────────────────────
+  redis-test:
+    image: redis:7-alpine
+    container_name: smart-retail-redis-test
+    command: redis-server --appendonly no # Sin persistencia para tests
+    ports:
+      - "6380:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 2s
+      timeout: 5s
+      retries: 10
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Networks
+# ─────────────────────────────────────────────────────────────────────────────
+networks:
+  default:
+    name: smart-retail-test-network

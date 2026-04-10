@@ -1,0 +1,116 @@
+/**
+ * ============================================================================
+ * SMART_RETAIL Admin Web - Global Styles (Tailwind CSS v4)
+ * ============================================================================
+ * Sistema de diseño "SMART_RETAIL Slate" - Minimalista y sofisticado.
+ * ============================================================================
+ */
+
+@import "tailwindcss";
+@import "./styles/design-tokens.css";
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * BASE STYLES
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * FOCUS STYLES - Accesibilidad
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+*:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * SCROLLBAR - Minimalista
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-tertiary);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * SELECTION
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+::selection {
+  background-color: var(--color-accent);
+  color: var(--color-text-inverse);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * ANIMATIONS
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { 
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  from { 
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from { 
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to { 
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-fadeIn { animation: fadeIn var(--transition-base) forwards; }
+.animate-slideUp { animation: slideUp var(--transition-base) forwards; }
+.animate-slideDown { animation: slideDown var(--transition-base) forwards; }
+.animate-scaleIn { animation: scaleIn var(--transition-base) forwards; }
+.animate-spin { animation: spin 1s linear infinite; }
+

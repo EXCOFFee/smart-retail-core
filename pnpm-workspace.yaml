@@ -1,0 +1,12 @@
+# ============================================================================
+# SMART_RETAIL - pnpm Workspace Configuration
+# ============================================================================
+# Define los paquetes que forman parte del monorepo.
+# pnpm resuelve dependencias entre ellos automáticamente.
+# ============================================================================
+
+packages:
+  # Aplicaciones desplegables
+  - "apps/*"
+  # Paquetes compartidos (DTOs, types, utils)
+  - "packages/*"
