@@ -17,7 +17,7 @@ A NestJS backend that validates a purchase — **stock, payment, and identity in
 
 NestJS 11 · TypeScript · PostgreSQL 17 / TypeORM · Redis 7 / ioredis · Socket.io · Jest (667 passing unit tests, ~98% line coverage) · pnpm + Turborepo monorepo (backend · React Native kiosk · React admin).
 
-Hexagonal layering (`domain` → `application` → `infrastructure`) keeps external gateways behind ports. The repo ships real MercadoPago/MODO HTTP adapters and a Socket.io device gateway; the engine is unit-tested against in-memory doubles while those integrations are being wired into the composition root.
+Hexagonal layering (`domain` → `application` → `infrastructure`) keeps external gateways behind ports. Payment and device gateways are chosen by `GATEWAY_MODE`: the real MercadoPago / Socket.io adapters in production (the app refuses to boot on missing credentials rather than silently using a mock), and in-memory doubles in dev and tests.
 
 ---
 <a id="espanol"></a>

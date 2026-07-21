@@ -66,6 +66,15 @@ export const envValidationSchema = Joi.object({
   BCRYPT_COST: Joi.number().min(10).max(15).default(12),
 
   // ─────────────────────────────────────────────────────────────────────
+  // GATEWAYS EXTERNOS (pago + hardware)
+  // ─────────────────────────────────────────────────────────────────────
+  // 'live'  → usa los adapters reales (MercadoPago / WebSocket).
+  // 'mock'  → usa dobles en memoria (dev/test, sin credenciales).
+  // Si no se define: 'live' en producción, 'mock' fuera de producción.
+  // 'mock' está PROHIBIDO en producción (se rechaza al arrancar).
+  GATEWAY_MODE: Joi.string().valid('live', 'mock').optional(),
+
+  // ─────────────────────────────────────────────────────────────────────
   // PASARELAS DE PAGO - Opcional en desarrollo
   // ─────────────────────────────────────────────────────────────────────
   MP_ACCESS_TOKEN: Joi.string().when('NODE_ENV', {

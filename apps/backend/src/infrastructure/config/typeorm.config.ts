@@ -36,6 +36,15 @@ export const typeOrmConfigFactory = (
   entities: [__dirname + '/../../**/*.entity{.ts,.js}'],
 
   // ─────────────────────────────────────────────────────────────────────
+  // AUTO-LOAD ENTITIES: Registra automáticamente las entidades ORM que cada
+  // módulo declara con TypeOrmModule.forFeature([...]).
+  // Por qué: las entidades ORM viven en archivos *.orm-entity.ts, que el glob
+  // de `entities` (arriba) no matchea; sin esto, TypeORM no encuentra su
+  // metadata en runtime ("No metadata for UserOrmEntity was found").
+  // ─────────────────────────────────────────────────────────────────────
+  autoLoadEntities: true,
+
+  // ─────────────────────────────────────────────────────────────────────
   // MIGRACIONES: Solo se ejecutan manualmente
   // Por qué: Control total sobre cambios en producción
   // ─────────────────────────────────────────────────────────────────────

@@ -19,10 +19,13 @@ import { ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 
+import { AuthService } from '@application/services/auth.service';
 import { RefreshTokenService } from '@application/services/refresh-token.service';
 import { JwtAuthGuard } from '@infrastructure/auth/guards/jwt-auth.guard';
 import { RolesGuard } from '@infrastructure/auth/guards/roles.guard';
 import { JwtStrategy } from '@infrastructure/auth/strategies/jwt.strategy';
+import { AuthController } from '@interfaces/http/controllers/auth.controller';
+import { UserModule } from '@modules/user';
 
 /**
  * Módulo global de autenticación.
@@ -33,6 +36,9 @@ import { JwtStrategy } from '@infrastructure/auth/strategies/jwt.strategy';
 @Global()
 @Module({
   imports: [
+    // UserModule provee USER_REPOSITORY, que AuthService necesita para
+    // buscar/crear usuarios en login y register.
+    UserModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({
       inject: [ConfigService],
@@ -46,13 +52,16 @@ import { JwtStrategy } from '@infrastructure/auth/strategies/jwt.strategy';
       }),
     }),
   ],
+  controllers: [AuthController],
   providers: [
+    AuthService,
     JwtStrategy,
     JwtAuthGuard,
     RolesGuard,
     RefreshTokenService,
   ],
   exports: [
+    AuthService,
     JwtAuthGuard,
     RolesGuard,
     RefreshTokenService,
