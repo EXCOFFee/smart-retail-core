@@ -14,7 +14,7 @@
  * - Cambio de contraseña
  * 
  * SEGURIDAD:
- * - Password hashing con SHA-256 (TODO: migrar a bcrypt)
+ * - Password hashing con bcrypt (salt por password, cost configurable)
  * - JWT RS256 para Access Tokens
  * - Refresh Tokens opacos en Redis
  * ============================================================================
@@ -29,7 +29,8 @@ import {
     NotFoundException,
     UnauthorizedException,
 } from '@nestjs/common';
-import { createHash, randomUUID } from 'crypto';
+import * as bcrypt from 'bcryptjs';
+import { randomUUID } from 'crypto';
 
 import {
     IUserRepository,
@@ -89,11 +90,25 @@ interface UserProfile {
 export class AuthService {
   private readonly logger = new Logger(AuthService.name);
 
+  /**
+   * Cost factor (work factor) de bcrypt. Configurable por BCRYPT_COST.
+   * Rango válido 10-15, default 12. Más alto = más lento = más caro de
+   * romper por fuerza bruta. Se lee de env para poder subirlo sin recompilar.
+   */
+  private readonly bcryptCost = AuthService.resolveBcryptCost();
+
   constructor(
     @Inject(USER_REPOSITORY)
     private readonly userRepository: IUserRepository,
     private readonly refreshTokenService: RefreshTokenService,
   ) {}
+
+  private static resolveBcryptCost(): number {
+    const parsed = Number.parseInt(process.env.BCRYPT_COST ?? '', 10);
+    return Number.isInteger(parsed) && parsed >= 10 && parsed <= 15
+      ? parsed
+      : 12;
+  }
 
   // ─────────────────────────────────────────────────────────────────────────
   // LOGIN
@@ -125,9 +140,9 @@ export class AuthService {
       throw new UnauthorizedException('Usuario desactivado');
     }
 
-    // Verificar contraseña
-    const passwordHash = this.hashPassword(password);
-    if (passwordHash !== user.passwordHash) {
+    // Verificar contraseña (comparación de tiempo constante vía bcrypt)
+    const passwordValid = await this.verifyPassword(password, user.passwordHash);
+    if (!passwordValid) {
       this.logger.warn(`Login failed: wrong password - ${email}`);
       throw new UnauthorizedException('Credenciales inválidas');
     }
@@ -186,7 +201,7 @@ export class AuthService {
 
     // Crear nuevo usuario
     const userId = randomUUID();
-    const passwordHash = this.hashPassword(dto.password);
+    const passwordHash = await this.hashPassword(dto.password);
 
     const user = new User({
       id: userId,
@@ -303,22 +318,31 @@ export class AuthService {
       throw new NotFoundException('Usuario no encontrado');
     }
 
-    // Verificar contraseña actual
-    const currentHash = this.hashPassword(currentPassword);
-    if (currentHash !== user.passwordHash) {
+    // Verificar contraseña actual (tiempo constante)
+    const currentValid = await this.verifyPassword(
+      currentPassword,
+      user.passwordHash,
+    );
+    if (!currentValid) {
       this.logger.warn(`Password change failed: wrong current password - ${userId}`);
       throw new UnauthorizedException('Contraseña actual incorrecta');
     }
 
-    // Verificar que la nueva contraseña sea diferente
-    const newHash = this.hashPassword(newPassword);
-    if (newHash === user.passwordHash) {
+    // Verificar que la nueva contraseña sea diferente.
+    // Con bcrypt no podemos comparar hashes con === (cada hash lleva un salt
+    // distinto), así que verificamos la contraseña nueva contra el hash actual.
+    const newEqualsCurrent = await this.verifyPassword(
+      newPassword,
+      user.passwordHash,
+    );
+    if (newEqualsCurrent) {
       throw new BadRequestException(
         'La nueva contraseña debe ser diferente a la actual',
       );
     }
 
     // Actualizar contraseña usando el método de dominio
+    const newHash = await this.hashPassword(newPassword);
     user.updatePassword(newHash);
     await this.userRepository.save(user);
 
@@ -365,16 +389,32 @@ export class AuthService {
   // ─────────────────────────────────────────────────────────────────────────
 
   /**
-   * Hashea una contraseña con SHA-256.
-   * 
-   * TODO: Migrar a bcrypt para mayor seguridad.
-   * SHA-256 es rápido (malo para passwords) y no tiene salt.
-   * 
+   * Hashea una contraseña con bcrypt.
+   *
+   * bcrypt genera un salt aleatorio por password y lo embebe en el hash,
+   * así que dos usuarios con la misma contraseña obtienen hashes distintos.
+   * Es deliberadamente lento (a diferencia de SHA-256) para encarecer la
+   * fuerza bruta.
+   *
    * @param password - Contraseña en texto plano
-   * @returns Hash SHA-256 en hexadecimal
+   * @returns Hash bcrypt (incluye algoritmo, cost y salt)
    */
-  private hashPassword(password: string): string {
-    return createHash('sha256').update(password).digest('hex');
+  private async hashPassword(password: string): Promise<string> {
+    return bcrypt.hash(password, this.bcryptCost);
+  }
+
+  /**
+   * Verifica una contraseña contra su hash bcrypt.
+   *
+   * bcrypt.compare hace una comparación de tiempo constante: no filtra
+   * información por timing sobre cuántos caracteres coincidieron.
+   *
+   * @param password - Contraseña en texto plano ingresada
+   * @param hash - Hash bcrypt almacenado
+   * @returns true si la contraseña coincide
+   */
+  private async verifyPassword(password: string, hash: string): Promise<boolean> {
+    return bcrypt.compare(password, hash);
   }
 
   /**

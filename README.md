@@ -181,7 +181,7 @@ pnpm migration:revert
 
 - **Autenticación**: JWT con firma RS256.
 - **Validación Estricta**: `class-validator` en todas las capas de entrada (Controllers/Webhooks).
-- **Passwords**: Hashing criptográfico con bcrypt/argon2.
+- **Passwords**: Hashing con bcrypt (salt por password, cost factor configurable vía `BCRYPT_COST`).
 - **Anti-fraude IoT**: Bloqueo estricto de operaciones de hardware en estado offline.
 
 ---

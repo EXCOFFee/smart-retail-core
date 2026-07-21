@@ -58,6 +58,14 @@ export const envValidationSchema = Joi.object({
   JWT_REFRESH_TOKEN_TTL: Joi.number().min(3600).default(604800), // 7 días
 
   // ─────────────────────────────────────────────────────────────────────
+  // HASHING DE PASSWORDS (bcrypt)
+  // ─────────────────────────────────────────────────────────────────────
+  // Cost factor de bcrypt. 12 es un buen default para producción; subir si
+  // el hardware lo permite. Rango 10-15 para evitar valores inseguros o
+  // absurdamente lentos.
+  BCRYPT_COST: Joi.number().min(10).max(15).default(12),
+
+  // ─────────────────────────────────────────────────────────────────────
   // PASARELAS DE PAGO - Opcional en desarrollo
   // ─────────────────────────────────────────────────────────────────────
   MP_ACCESS_TOKEN: Joi.string().when('NODE_ENV', {

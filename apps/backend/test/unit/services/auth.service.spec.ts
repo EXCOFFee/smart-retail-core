@@ -13,7 +13,7 @@ import {
     UnauthorizedException,
 } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { createHash } from 'crypto';
+import * as bcrypt from 'bcryptjs';
 import { USER_REPOSITORY } from '../../../src/application/ports/output/repositories.port';
 import { AuthService } from '../../../src/application/services/auth.service';
 import { RefreshTokenService } from '../../../src/application/services/refresh-token.service';
@@ -47,8 +47,11 @@ describe('AuthService', () => {
     revokeAllUserTokens: jest.fn(),
   };
 
+  // Hash bcrypt para los fixtures. Usamos cost 4 (mínimo de bcrypt) para que
+  // los tests sean rápidos; bcrypt.compare valida sin importar el cost porque
+  // el cost va embebido en el hash.
   const hashPassword = (password: string): string =>
-    createHash('sha256').update(password).digest('hex');
+    bcrypt.hashSync(password, 4);
 
   const createMockUser = (overrides = {}) => {
     return new User({
