@@ -24,7 +24,7 @@ Hexagonal layering (`domain` → `application` → `infrastructure`) keeps exter
 
 # SmartRetail-Core: Smart Retail & Logistics System
 
-> **Aduana de Control Ciberfísica** - Validación de transacciones (Stock + Pago + Identidad) en <200ms
+> **Aduana de Control Ciberfísica** - Validación de transacciones (Stock + Pago + Identidad) en el camino crítico, con decisiones orientadas a baja latencia: lectura de stock en Redis antes de tocar Postgres, timeouts agresivos en la pasarela de pago y descuento de stock atómico en un único round-trip (script Lua).
 
 ![Version](https://img.shields.io/badge/version-0.1.0-blue)
 ![Node](https://img.shields.io/badge/node-%3E%3D24.0.0-green)
