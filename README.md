@@ -1,3 +1,27 @@
+> **English** | [Español](#espanol)
+
+# SmartRetail Core — real-time retail transaction engine
+
+A NestJS backend that validates a purchase — **stock, payment, and identity in one hot path** — and then drives physical hardware (turnstiles, lockers, vending machines) over WebSockets. It targets the Argentine market and its local payment rails (MercadoPago, MODO). This repo is a **sanitized architecture reference**: the core engine and its test suite are public; proprietary business rules and client data are not.
+
+**Live demo:** none published — the fastest way to see it run is the test suite: `pnpm --filter @smartretail/backend test` (667 passing tests).
+
+## Key engineering decisions
+
+- **Compensating rollback on the purchase path** — the order use case runs *QR check → stock lock → charge → hardware ACK* as a single flow. If the hardware never confirms **after the customer was already charged**, it auto-refunds the payment, returns the stock, and marks the transaction `REFUNDED_HARDWARE_FAILURE`. Money never leaves without a door opening. → [process-access.service.ts](apps/backend/src/application/use-cases/process-access.service.ts)
+- **Three independent guards against overselling** — a Redis `SET NX EX` soft-lock (one buyer per product/location at a time), a Lua script that decrements stock atomically and refuses to go below zero, and an optimistic `version` check on the Postgres write. Concurrency is handled in the cache *and* in the database. → [redis-stock-cache.adapter.ts](apps/backend/src/infrastructure/adapters/cache/redis-stock-cache.adapter.ts), [product.repository.ts](apps/backend/src/infrastructure/database/repositories/product.repository.ts)
+- **Rotating, opaque refresh tokens** — short-lived RS256-signed access JWTs, plus 256-bit opaque refresh tokens stored *hashed* in Redis, rotated on every use (the old one is deleted) and revocable per session or across all sessions. → [refresh-token.service.ts](apps/backend/src/application/services/refresh-token.service.ts)
+- **Money as integer cents** — a `Money` value object keeps every amount in integer cents, and the schema stores `*_cents` columns guarded by `CHECK (>= 0)`. No floating-point ever touches the payment path. → [money.value-object.ts](apps/backend/src/domain/value-objects/money.value-object.ts)
+
+## Stack
+
+NestJS 11 · TypeScript · PostgreSQL 17 / TypeORM · Redis 7 / ioredis · Socket.io · Jest (667 passing unit tests, ~98% line coverage) · pnpm + Turborepo monorepo (backend · React Native kiosk · React admin).
+
+Hexagonal layering (`domain` → `application` → `infrastructure`) keeps external gateways behind ports. The repo ships real MercadoPago/MODO HTTP adapters and a Socket.io device gateway; the engine is unit-tested against in-memory doubles while those integrations are being wired into the composition root.
+
+---
+<a id="espanol"></a>
+
 # SmartRetail-Core: Smart Retail & Logistics System
 
 > **Aduana de Control Ciberfísica** - Validación de transacciones (Stock + Pago + Identidad) en <200ms
