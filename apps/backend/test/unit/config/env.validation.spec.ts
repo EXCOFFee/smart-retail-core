@@ -30,7 +30,7 @@ describe('Environment Validation Schema', () => {
       const prodEnv = {
         ...validEnv,
         NODE_ENV: 'production',
-        MP_ACCESS_TOKEN: 'mp-token-abc123',
+        MERCADOPAGO_ACCESS_TOKEN: 'mp-token-abc123',
       };
       const result = envValidationSchema.validate(prodEnv);
       expect(result.error).toBeUndefined();
@@ -162,14 +162,14 @@ describe('Environment Validation Schema', () => {
   });
 
   describe('production-specific validation', () => {
-    it('should require MP_ACCESS_TOKEN in production', () => {
+    it('should require MERCADOPAGO_ACCESS_TOKEN in production', () => {
       const prodEnv = { ...validEnv, NODE_ENV: 'production' };
       const result = envValidationSchema.validate(prodEnv);
       expect(result.error).toBeDefined();
-      expect(result.error?.message).toContain('MP_ACCESS_TOKEN');
+      expect(result.error?.message).toContain('MERCADOPAGO_ACCESS_TOKEN');
     });
 
-    it('should allow missing MP_ACCESS_TOKEN in development', () => {
+    it('should allow missing MERCADOPAGO_ACCESS_TOKEN in development', () => {
       const devEnv = { ...validEnv, NODE_ENV: 'development' };
       const result = envValidationSchema.validate(devEnv);
       expect(result.error).toBeUndefined();

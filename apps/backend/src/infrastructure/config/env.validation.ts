@@ -75,19 +75,26 @@ export const envValidationSchema = Joi.object({
   GATEWAY_MODE: Joi.string().valid('live', 'mock').optional(),
 
   // ─────────────────────────────────────────────────────────────────────
-  // PASARELAS DE PAGO - Opcional en desarrollo
+  // PASARELAS DE PAGO - Requeridas en producción (modo 'live')
   // ─────────────────────────────────────────────────────────────────────
-  MP_ACCESS_TOKEN: Joi.string().when('NODE_ENV', {
+  // Nombres alineados 1:1 con lo que leen los adapters (MercadoPagoAdapter /
+  // ModoAdapter). Con estas variables bien cargadas, GATEWAY_MODE=live funciona.
+  //
+  // MercadoPago (pasarela primaria)
+  MERCADOPAGO_ACCESS_TOKEN: Joi.string().when('NODE_ENV', {
     is: 'production',
     then: Joi.required(),
     otherwise: Joi.optional(),
   }),
-  MP_PUBLIC_KEY: Joi.string().optional(),
-  MP_WEBHOOK_SECRET: Joi.string().optional(),
+  MERCADOPAGO_API_URL: Joi.string().uri().optional(),
+  MERCADOPAGO_PUBLIC_KEY: Joi.string().optional(),
+  MERCADOPAGO_WEBHOOK_SECRET: Joi.string().optional(),
 
+  // MODO (pasarela alternativa)
   MODO_API_URL: Joi.string().uri().optional(),
-  MODO_CLIENT_ID: Joi.string().optional(),
-  MODO_CLIENT_SECRET: Joi.string().optional(),
+  MODO_API_KEY: Joi.string().optional(),
+  MODO_API_SECRET: Joi.string().optional(),
+  MODO_STORE_ID: Joi.string().optional(),
 
   // ─────────────────────────────────────────────────────────────────────
   // MONEDA
