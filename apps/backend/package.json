@@ -20,7 +20,9 @@
     "typeorm": "typeorm-ts-node-commonjs",
     "migration:generate": "pnpm typeorm migration:generate -d src/infrastructure/config/typeorm.config.ts",
     "migration:run": "pnpm typeorm migration:run -d src/infrastructure/config/typeorm.config.ts",
-    "migration:revert": "pnpm typeorm migration:revert -d src/infrastructure/config/typeorm.config.ts"
+    "migration:revert": "pnpm typeorm migration:revert -d src/infrastructure/config/typeorm.config.ts",
+    "db:migrate": "pnpm migration:run",
+    "db:seed:test": "ts-node --transpile-only ../../scripts/seed-test.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.0",

@@ -8,6 +8,7 @@
     "skipLibCheck": true,
     "outDir": "../dist/scripts",
     "rootDir": ".",
+    "types": ["node"],
     "noImplicitAny": false
   },
   "include": ["./**/*.ts"]

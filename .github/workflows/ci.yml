@@ -126,9 +126,14 @@ jobs:
           --health-retries 5
 
     env:
-      DATABASE_URL: postgresql://smartRetail:smart_retail_test@localhost:5432/smart_retail_test
-      REDIS_URL: redis://localhost:6379
-      JWT_SECRET: ci-test-secret-key
+      # La app y el CLI de TypeORM leen DB_* / REDIS_* (no DATABASE_URL).
+      DB_HOST: localhost
+      DB_PORT: 5432
+      DB_USERNAME: smartRetail
+      DB_PASSWORD: smart_retail_test
+      DB_DATABASE: smart_retail_test
+      REDIS_HOST: localhost
+      REDIS_PORT: 6379
       NODE_ENV: test
 
     steps:

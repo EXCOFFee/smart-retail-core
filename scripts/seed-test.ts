@@ -1,155 +1,107 @@
 /**
  * ============================================================================
- * SMART_RETAIL - Test Data Seed
+ * SMART_RETAIL - Seed de datos de test / desarrollo
  * ============================================================================
- * Semilla de datos para tests E2E.
- * 
- * Uso: pnpm db:seed:test
- * 
- * NOTA: Este script debe ejecutarse desde apps/backend donde
- * TypeORM está instalado, o con las entities importadas.
+ * Inserta un set mínimo de datos para poder ejercitar la app end-to-end:
+ * usuarios (con password hasheada en bcrypt), dispositivos y productos, todos
+ * en una misma ubicación.
+ *
+ * Uso (desde apps/backend): pnpm db:seed:test
+ * Requiere que las migraciones ya estén corridas (las tablas deben existir).
+ *
+ * IDEMPOTENTE: usa ON CONFLICT DO NOTHING, así que se puede correr varias veces
+ * sin duplicar ni fallar.
+ *
+ * Conexión: lee las mismas variables que la app (DB_HOST, DB_PORT, ...), con
+ * fallback a DATABASE_URL y por último a los defaults del docker-compose local.
  * ============================================================================
  */
+import * as bcrypt from 'bcryptjs';
+import { Client, ClientConfig } from 'pg';
 
-// Definición de tipos para evitar dependencia directa de typeorm
-// TypeORM DataSource se importa dinámicamente en runtime
-type DataSourceOptions = {
-  type: 'postgres';
-  url: string;
-  synchronize: boolean;
-  logging: boolean;
-  entities: unknown[];
-};
+/** Ubicación única compartida por usuarios, dispositivos y productos del seed. */
+const LOCATION_ID = '550e8400-e29b-41d4-a716-446655440001';
 
-// Este archivo es un placeholder para el seed de tests
-// La implementación real requiere las entities de TypeORM
+/** Cost bajo: el seed no es sensible y así corre rápido en CI. */
+const BCRYPT_COST = 10;
 
-interface SeedData {
-  users: Array<{
-    email: string;
-    password: string;
-    fullName: string;
-    role: string;
-    walletBalance: number;
-  }>;
-  devices: Array<{
-    name: string;
-    type: string;
-    locationId: string;
-    status: string;
-  }>;
-  products: Array<{
-    sku: string;
-    name: string;
-    price: number;
-    stock: number;
-  }>;
+function resolveConnection(): ClientConfig {
+  if (process.env.DATABASE_URL) {
+    return { connectionString: process.env.DATABASE_URL };
+  }
+  return {
+    host: process.env.DB_HOST ?? 'localhost',
+    port: Number.parseInt(process.env.DB_PORT ?? '5432', 10),
+    user: process.env.DB_USERNAME ?? 'smartRetail',
+    password: process.env.DB_PASSWORD ?? 'smart_retail_secret_2026',
+    database: process.env.DB_DATABASE ?? 'smart_retail_db',
+  };
 }
 
-const testData: SeedData = {
-  users: [
-    {
-      email: 'test@smartretail.com',
-      password: 'TestPassword123!', // Será hasheada
-      fullName: 'Test User',
-      role: 'consumer',
-      walletBalance: 100000, // $1000.00 en centavos
-    },
-    {
-      email: 'no-balance@smartretail.com',
-      password: 'TestPassword123!',
-      fullName: 'No Balance User',
-      role: 'consumer',
-      walletBalance: 0,
-    },
-    {
-      email: 'admin@smartretail.com',
-      password: 'AdminPassword123!',
-      fullName: 'Admin User',
-      role: 'admin',
-      walletBalance: 0,
-    },
-  ],
-  devices: [
-    {
-      name: 'Molinete Principal',
-      type: 'TURNSTILE',
-      locationId: 'location-001',
-      status: 'ONLINE',
-    },
-    {
-      name: 'Puerta Emergencia',
-      type: 'DOOR',
-      locationId: 'location-001',
-      status: 'ONLINE',
-    },
-  ],
-  products: [
-    {
-      sku: 'PROD-001',
-      name: 'Acceso General',
-      price: 1500, // $15.00
-      stock: 100,
-    },
-    {
-      sku: 'PROD-002',
-      name: 'Acceso VIP',
-      price: 5000, // $50.00
-      stock: 10,
-    },
-    {
-      sku: 'LIMITED-001',
-      name: 'Producto Limitado',
-      price: 2000,
-      stock: 1, // Solo 1 en stock para test de race condition
-    },
-  ],
-};
+const USERS = [
+  { email: 'test@smartretail.com', password: 'TestPassword123!', fullName: 'Test User', role: 'consumer', wallet: 100000 },
+  { email: 'admin@smartretail.com', password: 'AdminPassword123!', fullName: 'Admin User', role: 'admin', wallet: 0 },
+  { email: 'no-balance@smartretail.com', password: 'TestPassword123!', fullName: 'No Balance User', role: 'consumer', wallet: 0 },
+];
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type DataSource = any;
+const DEVICES = [
+  { serial: 'SN-TEST-0001', name: 'Molinete Principal', type: 'TURNSTILE', status: 'ONLINE' },
+  { serial: 'SN-TEST-0002', name: 'Locker A', type: 'LOCKER', status: 'ONLINE' },
+];
 
-async function seed(_dataSource: DataSource): Promise<void> {
-  console.log('🌱 Seeding test data...');
-
-  // La implementación real usaría los repositorios de TypeORM
-  // Por ahora, este es un placeholder
-
-  console.log('✅ Test data seeded successfully!');
-  console.log(`   - ${testData.users.length} users`);
-  console.log(`   - ${testData.devices.length} devices`);
-  console.log(`   - ${testData.products.length} products`);
-}
+const PRODUCTS = [
+  { sku: 'PROD-001', name: 'Acceso General', price: 1500, stock: 100 },
+  { sku: 'PROD-002', name: 'Acceso VIP', price: 5000, stock: 10 },
+  { sku: 'LIMITED-001', name: 'Producto Limitado', price: 2000, stock: 1 },
+];
 
 async function main(): Promise<void> {
-  // Este script debe ejecutarse desde apps/backend donde TypeORM está instalado
-  // Uso: cd apps/backend && npx ts-node ../../scripts/seed-test.ts
-  
-  // Importación dinámica de TypeORM
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const typeorm = require('typeorm');
-  const { DataSource } = typeorm;
-  
-  // Crear conexión a la base de datos de test
-  const dataSource = new DataSource({
-    type: 'postgres',
-    url:
-      process.env.DATABASE_URL ??
-      'postgresql://smartRetail:smart_retail_test@localhost:5433/smart_retail_test',
-    synchronize: true, // Solo para tests
-    logging: false,
-    entities: [], // Agregar entities aquí
-  });
+  const client = new Client(resolveConnection());
+  await client.connect();
 
   try {
-    await dataSource.initialize();
-    await seed(dataSource);
+    await client.query('BEGIN');
+
+    for (const u of USERS) {
+      const passwordHash = bcrypt.hashSync(u.password, BCRYPT_COST);
+      await client.query(
+        `INSERT INTO "users"
+           (email, password_hash, wallet_balance_cents, full_name, role, location_id, is_active)
+         VALUES ($1, $2, $3, $4, $5, $6, true)
+         ON CONFLICT (email) DO NOTHING`,
+        [u.email, passwordHash, u.wallet, u.fullName, u.role, LOCATION_ID],
+      );
+    }
+
+    for (const d of DEVICES) {
+      await client.query(
+        `INSERT INTO "devices" (serial_number, name, type, status, location_id)
+         VALUES ($1, $2, $3, $4, $5)
+         ON CONFLICT (serial_number) DO NOTHING`,
+        [d.serial, d.name, d.type, d.status, LOCATION_ID],
+      );
+    }
+
+    for (const p of PRODUCTS) {
+      await client.query(
+        `INSERT INTO "products" (sku, name, price_cents, stock_quantity, location_id, status, version)
+         VALUES ($1, $2, $3, $4, $5, 'ACTIVE', 1)
+         ON CONFLICT (sku, location_id) DO NOTHING`,
+        [p.sku, p.name, p.price, p.stock, LOCATION_ID],
+      );
+    }
+
+    await client.query('COMMIT');
+    console.log(
+      `✅ Seed OK: ${USERS.length} users, ${DEVICES.length} devices, ${PRODUCTS.length} products (location ${LOCATION_ID})`,
+    );
+  } catch (error) {
+    await client.query('ROLLBACK');
+    console.error('❌ Seed failed:', error);
+    process.exitCode = 1;
   } finally {
-    await dataSource.destroy();
+    await client.end();
   }
 }
 
-main().catch(console.error);
-
-export { seed, testData };
-
+void main();
