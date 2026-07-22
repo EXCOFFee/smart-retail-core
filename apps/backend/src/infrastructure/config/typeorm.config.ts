@@ -11,7 +11,19 @@
 
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
+import * as dotenv from 'dotenv';
 import { DataSource, DataSourceOptions } from 'typeorm';
+
+// El CLI de TypeORM (migraciones) corre FUERA de NestJS, así que no hay
+// ConfigModule que cargue el .env. Cargamos las mismas variables que la app,
+// con la misma precedencia (.env.local antes que .env). dotenv no pisa
+// variables ya presentes en el entorno (p. ej. las que inyecta el CI).
+// En tests (NODE_ENV=test) NO cargamos ningún .env para mantener el entorno
+// de test hermético.
+if (process.env.NODE_ENV !== 'test') {
+  dotenv.config({ path: '.env.local' });
+  dotenv.config({ path: '.env' });
+}
 
 /**
  * Factory function para NestJS TypeOrmModule.forRootAsync()
@@ -30,19 +42,13 @@ export const typeOrmConfigFactory = (
   database: configService.get<string>('DB_DATABASE'),
 
   // ─────────────────────────────────────────────────────────────────────
-  // ENTIDADES: Cargamos automáticamente todas las entidades
-  // Por qué glob pattern: Evita importar manualmente cada entidad
+  // ENTIDADES: Glob de las entidades ORM.
+  // CRÍTICO: el patrón matchea *.orm-entity.ts (infraestructura), NO los
+  // *.entity.ts de dominio (clases puras sin decoradores). Apuntar al glob
+  // equivocado hacía que TypeORM no encontrara la metadata en runtime
+  // ("No metadata for UserOrmEntity was found").
   // ─────────────────────────────────────────────────────────────────────
-  entities: [__dirname + '/../../**/*.entity{.ts,.js}'],
-
-  // ─────────────────────────────────────────────────────────────────────
-  // AUTO-LOAD ENTITIES: Registra automáticamente las entidades ORM que cada
-  // módulo declara con TypeOrmModule.forFeature([...]).
-  // Por qué: las entidades ORM viven en archivos *.orm-entity.ts, que el glob
-  // de `entities` (arriba) no matchea; sin esto, TypeORM no encuentra su
-  // metadata en runtime ("No metadata for UserOrmEntity was found").
-  // ─────────────────────────────────────────────────────────────────────
-  autoLoadEntities: true,
+  entities: [__dirname + '/../../**/*.orm-entity{.ts,.js}'],
 
   // ─────────────────────────────────────────────────────────────────────
   // MIGRACIONES: Solo se ejecutan manualmente
@@ -88,7 +94,7 @@ const dataSourceOptions: DataSourceOptions = {
   // SECURITY: No hardcodear password - debe venir de Fly.io secrets
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE || 'smart_retail_db',
-  entities: [__dirname + '/../../**/*.entity{.ts,.js}'],
+  entities: [__dirname + '/../../**/*.orm-entity{.ts,.js}'],
   migrations: [__dirname + '/../database/migrations/*{.ts,.js}'],
   synchronize: false,
   logging: true,

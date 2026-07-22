@@ -60,7 +60,8 @@ describe('TypeORM Config Factory', () => {
 
       expect(config.entities).toBeDefined();
       expect(Array.isArray(config.entities)).toBe(true);
-      expect((config.entities as string[])[0]).toContain('.entity');
+      // Debe apuntar a las entidades ORM (*.orm-entity), no a las de dominio.
+      expect((config.entities as string[])[0]).toContain('.orm-entity');
     });
 
     it('should include migrations glob pattern', () => {
