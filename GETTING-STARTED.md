@@ -66,8 +66,8 @@ docker --version
 ### 2.1 Clonar el Repositorio
 
 ```powershell
-git clone https://github.com/EXCOFFee/smartRetail.git
-cd smartRetail
+git clone https://github.com/EXCOFFee/smart-retail-core.git
+cd smart-retail-core
 ```
 
 ### 2.2 Estructura del Proyecto
@@ -122,43 +122,24 @@ cd ../..
 
 ### 4.1 Iniciar Servicios con Docker
 
+El repo ya incluye `docker-compose.yml` (PostgreSQL 17 + Redis 7). El script de
+init (`docker/init-scripts/01-init.sql`) crea la extensión `uuid-ossp` y el
+schema `audit` automáticamente en el primer arranque.
+
 ```powershell
-# Iniciar PostgreSQL y Redis
-docker-compose up -d
+# Levanta solo Postgres + Redis (equivalente a: pnpm db:dev)
+docker compose up -d postgres redis
 ```
 
-Si no existe `docker-compose.yml`, créalo:
+Credenciales por defecto (definidas en `docker-compose.yml`, coinciden con
+los defaults de `.env.example`):
 
-```yaml
-# docker-compose.yml
-version: '3.9'
-
-services:
-  postgres:
-    image: postgres:17-alpine
-    container_name: smart-retail-postgres
-    ports:
-      - "5432:5432"
-    environment:
-      POSTGRES_USER: smartRetail
-      POSTGRES_PASSWORD: smart_retail_dev
-      POSTGRES_DB: smartRetail
-    volumes:
-      - smart_retail_postgres_data:/var/lib/postgresql/data
-
-  redis:
-    image: redis:7-alpine
-    container_name: smart-retail-redis
-    ports:
-      - "6379:6379"
-    command: redis-server --appendonly yes
-    volumes:
-      - smart_retail_redis_data:/data
-
-volumes:
-  smart_retail_postgres_data:
-  smart_retail_redis_data:
-```
+| Dato | Valor |
+|------|-------|
+| Usuario | `smartRetail` |
+| Password | `smart_retail_secret_2026` |
+| Base | `smart_retail_db` |
+| Puerto | `5432` |
 
 ### 4.2 Verificar Conexión
 
@@ -175,69 +156,65 @@ docker exec -it smart-retail-redis redis-cli ping
 
 ## 🔐 5. VARIABLES DE ENTORNO
 
-### 5.1 Crear Archivo .env para Backend
+### 5.1 Crear el archivo de entorno del Backend
+
+La app carga `.env.local` (prioridad) y luego `.env`. Copiá el template:
 
 ```powershell
 cd apps/backend
-Copy-Item .env.example .env
+Copy-Item .env.example .env.local
 ```
 
-### 5.2 Contenido del .env
+`.env.example` ya trae los valores de **DB y Redis que coinciden con
+`docker-compose.yml`**, así que en local no hace falta tocarlos. Lo único
+obligatorio es completar las **claves JWT** (paso 5.2). `GATEWAY_MODE=mock`
+viene por defecto: usa dobles en memoria para pagos/hardware, sin credenciales
+reales.
 
-```env
-# ═══════════════════════════════════════════════════════════════
-# SMART_RETAIL - Backend Environment Variables
-# ═══════════════════════════════════════════════════════════════
+> Nombres de variables (los reales que lee la app): `DB_HOST`, `DB_PORT`,
+> `DB_USERNAME`, `DB_PASSWORD`, `DB_DATABASE`, `REDIS_HOST`, `REDIS_PORT`,
+> `JWT_PRIVATE_KEY`, `JWT_PUBLIC_KEY`, `GATEWAY_MODE`, `MERCADOPAGO_ACCESS_TOKEN`.
+> **No** usa `DATABASE_URL` ni `REDIS_URL`.
 
-# ─── AMBIENTE ───────────────────────────────────────────────────
-NODE_ENV=development
-PORT=3000
+### 5.2 Generar claves JWT RS256
 
-# ─── BASE DE DATOS ──────────────────────────────────────────────
-DATABASE_URL=postgresql://smartRetail:smart_retail_dev@localhost:5432/smartRetail
-
-# ─── REDIS ──────────────────────────────────────────────────────
-REDIS_URL=redis://localhost:6379
-
-# ─── JWT (Generar claves únicas para producción!) ───────────────
-# Generar: openssl genrsa -out private.pem 2048
-#          openssl rsa -in private.pem -pubout -out public.pem
-JWT_PRIVATE_KEY="-----BEGIN RSA PRIVATE KEY-----
-... tu clave privada ...
------END RSA PRIVATE KEY-----"
-
-JWT_PUBLIC_KEY="-----BEGIN PUBLIC KEY-----
-... tu clave pública ...
------END PUBLIC KEY-----"
-
-JWT_ACCESS_EXPIRATION=15m
-JWT_REFRESH_EXPIRATION=7d
-
-# ─── PASARELA DE PAGOS ──────────────────────────────────────────
-MERCADOPAGO_ACCESS_TOKEN=TEST-xxxx-xxxx-xxxx
-MERCADOPAGO_PUBLIC_KEY=TEST-xxxx-xxxx-xxxx
-
-# ─── TIMEOUTS ───────────────────────────────────────────────────
-PAYMENT_TIMEOUT_MS=3000
-HARDWARE_ACK_TIMEOUT_MS=5000
-REDIS_LOCK_TTL=30
-
-# ─── RATE LIMITING ──────────────────────────────────────────────
-RATE_LIMIT_GLOBAL_MAX=100
-RATE_LIMIT_GLOBAL_WINDOW_SECONDS=60
-RATE_LIMIT_ACCESS_MAX=10
-RATE_LIMIT_ACCESS_WINDOW_SECONDS=60
-```
-
-### 5.3 Generar Claves JWT RS256
+Los Access Tokens se firman con RS256, así que hacen falta un par de claves:
 
 ```powershell
-# En PowerShell/CMD con OpenSSL instalado
 openssl genrsa -out private.pem 2048
 openssl rsa -in private.pem -pubout -out public.pem
-
-# Copiar contenido a .env (escapar saltos de línea o usar comillas)
 ```
+
+Pegá el contenido en `.env.local`. `dotenv` soporta valores multilínea entre
+comillas dobles, así que va tal cual (con los saltos de línea reales):
+
+```env
+JWT_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----
+...contenido de private.pem...
+-----END PRIVATE KEY-----"
+JWT_PUBLIC_KEY="-----BEGIN PUBLIC KEY-----
+...contenido de public.pem...
+-----END PUBLIC KEY-----"
+```
+
+> **Importante:** dejá `DB_SYNCHRONIZE=false` (el default). El esquema se crea
+> con **migraciones reales** (paso 5.3), no con auto-sync. `synchronize=true`
+> es solo un atajo de desarrollo y no debe usarse en el camino normal.
+
+### 5.3 Migraciones y datos de prueba
+
+Con Postgres arriba y el `.env.local` listo, creá el esquema y (opcional) cargá
+datos de prueba:
+
+```powershell
+# Desde apps/backend
+pnpm db:migrate       # crea todas las tablas (users, products, devices, transactions, audit.audit_logs)
+pnpm db:seed:test     # opcional: usuarios + dispositivos + productos de ejemplo
+```
+
+El seed crea, entre otros, el usuario `test@smartretail.com` /
+`TestPassword123!` (con password hasheada en bcrypt) para poder loguearte
+enseguida.
 
 ---
 
@@ -250,11 +227,18 @@ cd apps/backend
 
 # Modo desarrollo (hot reload)
 pnpm dev
-
-# Verificar que funciona
-# Health: http://localhost:3000/health
-# Swagger: http://localhost:3000/docs
 ```
+
+Al arrancar vas a ver: `🚀 SMART_RETAIL Backend corriendo en: http://localhost:3000`.
+
+**Verificar que responde:**
+- **Swagger (docs vivas):** http://localhost:3000/docs — desde acá podés probar
+  `POST /auth/login` con `test@smartretail.com` / `TestPassword123!`.
+- Todas las rutas de la API cuelgan de `/api/v1` (ej. `POST /api/v1/auth/login`,
+  `POST /api/v1/access/request`).
+
+> Nota: `GET /api/v1/health` está detrás del guard global de auth (responde 401
+> sin token); usá `/docs` para el chequeo rápido de que la app está viva.
 
 ### 6.2 Admin Web (React + Vite)
 
@@ -487,8 +471,10 @@ pnpm start
 - [ ] Docker instalado y corriendo
 - [ ] `pnpm install` ejecutado en raíz
 - [ ] Docker Compose levantado (postgres + redis)
-- [ ] Archivo `.env.local` configurado en raíz
-- [ ] Claves JWT generadas
+- [ ] Archivo `.env.local` creado en `apps/backend` (copiado de `.env.example`)
+- [ ] Claves JWT generadas y pegadas en `.env.local`
+- [ ] Migraciones corridas (`pnpm db:migrate`) — sin `DB_SYNCHRONIZE=true`
+- [ ] (Opcional) Seed cargado (`pnpm db:seed:test`)
 - [ ] Backend arranca sin errores (`cd apps/backend; pnpm dev`)
 - [ ] Swagger accesible en http://localhost:3000/docs
 - [ ] Admin Web arranca (`cd apps/admin-web; pnpm dev`)
