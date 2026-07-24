@@ -5,9 +5,9 @@
  * Simula el gateway WebSocket que controla dispositivos IoT.
  * 
  * IMPLEMENTA MOCKS PARA:
- * - CU-04: Reembolso por fallo de hardware
- * - CU-09: Reconexión WebSocket
- * - CU-18: Alerta de puerta forzada
+ * Reembolso por fallo de hardware
+ * Reconexión WebSocket
+ * Alerta de puerta forzada
  * ============================================================================
  */
 
@@ -218,7 +218,7 @@ export class MockWebSocketGateway extends EventEmitter {
   }
 
   /**
-   * Simula un evento de sensor sin comando previo (CU-18: puerta forzada).
+   * Simula un evento de sensor sin comando previo (puerta forzada).
    */
   simulateForcedEntry(deviceId: string): void {
     const event: DeviceMessage = {
@@ -291,7 +291,7 @@ export class MockWebSocketGateway extends EventEmitter {
   private handleEvent(deviceId: string, message: DeviceMessage): void {
     const payload = message.payload as { eventType: string; hasPreviousCommand?: boolean };
 
-    // CU-18: Detectar entrada forzada
+    // Detectar entrada forzada
     if (payload.eventType === 'SENSOR_ACTIVATED' && !payload.hasPreviousCommand) {
       this.emit('security:breach', {
         deviceId,

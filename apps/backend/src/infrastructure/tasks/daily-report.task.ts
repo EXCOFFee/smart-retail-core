@@ -9,7 +9,7 @@
  * - Los Cron Jobs son adaptadores que inician procesos programados
  * - Puede usar repositorios directamente ya que es un proceso de sistema
  * 
- * REFERENCIA: CU-14 - Cierre de Caja (Reporte Z)
+ * Cierre de Caja (Reporte Z)
  * ============================================================================
  */
 

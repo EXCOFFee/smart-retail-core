@@ -121,8 +121,8 @@ export class ProcessAccessService implements IProcessAccessUseCase {
   /**
    * Ejecuta el flujo completo de validación y acceso.
    * 
-   * CRÍTICO: Este método implementa el "Happy Path" (CU-01) y maneja
-   * todos los edge cases definidos en el SRS (CU-02 a CU-08).
+   * CRÍTICO: Este método implementa el "Happy Path" y maneja
+   * todos los edge cases definidos en el SRS.
    * 
    * @param input - Datos de la solicitud de acceso
    * @returns Resultado del procesamiento
@@ -145,7 +145,7 @@ export class ProcessAccessService implements IProcessAccessUseCase {
 
     try {
       // ─────────────────────────────────────────────────────────────────────
-      // PASO 1: Validar QR (Anti-Replay Attack - CU-08)
+      // PASO 1: Validar QR (Anti-Replay Attack)
       // ─────────────────────────────────────────────────────────────────────
       if (input.qrPayload) {
         this.validateQrPayload(input.qrPayload, traceId);
@@ -194,7 +194,7 @@ export class ProcessAccessService implements IProcessAccessUseCase {
 
       // ─────────────────────────────────────────────────────────────────────
       // PASO 4: Obtener producto y precio (si aplica)
-      // CU-19: Guardamos el precio al momento del escaneo (snapshot)
+      // Guardamos el precio al momento del escaneo (snapshot)
       // ─────────────────────────────────────────────────────────────────────
       let amount = Money.zero();
       let product = null;
@@ -236,7 +236,7 @@ export class ProcessAccessService implements IProcessAccessUseCase {
         }
 
         // ───────────────────────────────────────────────────────────────────
-        // PASO 6: Adquirir Soft Lock (CU-05: Race Condition)
+        // PASO 6: Adquirir Soft Lock (Race Condition)
         // CRÍTICO: Si otro usuario ya tiene el lock, rechazamos inmediatamente
         // ───────────────────────────────────────────────────────────────────
         const lockResult = await this.stockCache.acquireLock(
@@ -277,8 +277,8 @@ export class ProcessAccessService implements IProcessAccessUseCase {
 
       // ─────────────────────────────────────────────────────────────────────
       // PASO 8: Procesar pago (si hay monto)
-      // CU-02: Si falla, liberamos lock y retornamos error
-      // CU-03: Si hay timeout, marcamos IN_PROCESS y reconciliamos después
+      // Si falla, liberamos lock y retornamos error
+      // Si hay timeout, marcamos IN_PROCESS y reconciliamos después
       // ─────────────────────────────────────────────────────────────────────
       if (!amount.isZero()) {
         paymentResult = await this.processPayment(
@@ -343,7 +343,7 @@ export class ProcessAccessService implements IProcessAccessUseCase {
 
       // ─────────────────────────────────────────────────────────────────────
       // PASO 10: Enviar señal al dispositivo y esperar ACK
-      // CU-04: Si no hay ACK, iniciamos refund automático
+      // Si no hay ACK, iniciamos refund automático
       // ─────────────────────────────────────────────────────────────────────
       const deviceOpened = await this.deviceGateway.openAndWaitConfirmation(
         deviceId,
@@ -352,7 +352,7 @@ export class ProcessAccessService implements IProcessAccessUseCase {
       );
 
       if (!deviceOpened) {
-        // Hardware falló - Iniciar rollback (CU-04)
+        // Hardware falló - Iniciar rollback
         this.logger.error('Hardware ACK timeout - initiating refund', {
           traceId,
           transactionId: transaction.id,
@@ -428,7 +428,7 @@ export class ProcessAccessService implements IProcessAccessUseCase {
   }
 
   /**
-   * Valida el payload del QR para prevenir replay attacks (CU-08).
+   * Valida el payload del QR para prevenir replay attacks.
    * 
    * @param qrPayload - Datos del QR escaneado
    * @param traceId - ID de trazabilidad
@@ -476,7 +476,7 @@ export class ProcessAccessService implements IProcessAccessUseCase {
         metadata: { traceId },
       });
     } catch (error) {
-      // Timeout o error de conexión - CU-03
+      // Timeout o error de conexión
       this.logger.error('Payment gateway error', {
         traceId,
         error: (error as Error).message,
@@ -489,7 +489,7 @@ export class ProcessAccessService implements IProcessAccessUseCase {
   }
 
   /**
-   * Maneja el rollback cuando el hardware falla (CU-04).
+   * Maneja el rollback cuando el hardware falla.
    * 
    * @param transaction - Transacción afectada
    * @param paymentResult - Resultado del pago (para refund)

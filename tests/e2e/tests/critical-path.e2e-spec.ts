@@ -4,7 +4,7 @@
  * ============================================================================
  * Tests de integración para el flujo crítico: QR → Backend → Device
  * 
- * IMPLEMENTA: CU-01, CU-02, CU-03
+ *
  * 
  * PRECONDICIONES:
  * - Docker compose test environment running
@@ -45,7 +45,7 @@ describe('Critical Path: Access Flow (E2E)', () => {
   });
 
   // ─────────────────────────────────────────────────────────────────────────
-  // CU-01: Proceso de Compra Exitoso (Happy Path)
+  // Proceso de Compra Exitoso (Happy Path)
   // ─────────────────────────────────────────────────────────────────────────
   describe('CU-01: Proceso de Compra Exitoso', () => {
     it('should process access in less than 200ms (P95)', async () => {
@@ -110,7 +110,7 @@ describe('Critical Path: Access Flow (E2E)', () => {
   });
 
   // ─────────────────────────────────────────────────────────────────────────
-  // CU-02: Rechazo por Fondos Insuficientes
+  // Rechazo por Fondos Insuficientes
   // ─────────────────────────────────────────────────────────────────────────
   describe('CU-02: Rechazo por Fondos Insuficientes', () => {
     it('should reject with 402 when insufficient balance', async () => {
@@ -160,7 +160,7 @@ describe('Critical Path: Access Flow (E2E)', () => {
   });
 
   // ─────────────────────────────────────────────────────────────────────────
-  // CU-05: Race Condition (Guerra de Clics)
+  // Race Condition (Guerra de Clics)
   // ─────────────────────────────────────────────────────────────────────────
   describe('CU-05: Race Condition Handling', () => {
     it('should reject concurrent requests for same product', async () => {
@@ -202,7 +202,7 @@ describe('Critical Path: Access Flow (E2E)', () => {
   });
 
   // ─────────────────────────────────────────────────────────────────────────
-  // CU-08: QR Expirado (Replay Attack Prevention)
+  // QR Expirado (Replay Attack Prevention)
   // ─────────────────────────────────────────────────────────────────────────
   describe('CU-08: Replay Attack Prevention', () => {
     it('should reject expired QR codes (> 60s)', async () => {

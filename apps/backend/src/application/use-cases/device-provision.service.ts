@@ -2,7 +2,7 @@
  * ============================================================================
  * SMART_RETAIL - Device Provision Service (Use Case Implementation)
  * ============================================================================
- * Implementación del caso de uso CU-10: Alta de Nuevo Dispositivo (Provisioning).
+ * Implementación del caso de uso: Alta de Nuevo Dispositivo (Provisioning).
  * 
  * ARQUITECTURA: Capa de APLICACIÓN 🟠 (use-cases)
  * 

@@ -5,7 +5,7 @@
  * Se lanza cuando un código QR ha expirado o ya fue usado.
  * 
  * Mapeo HTTP: 403 Forbidden
- * Caso de Uso: CU-08 (Detección de QR Clonado / Replay Attack)
+ * (Detección de QR Clonado / Replay Attack)
  * ============================================================================
  */
 

@@ -2,7 +2,7 @@
  * ============================================================================
  * SMART_RETAIL Admin Web - Products Page (ABM)
  * ============================================================================
- * Gestión de productos: Alta, Baja, Modificación, Ajuste de Stock (CU-13).
+ * Gestión de productos: Alta, Baja, Modificación, Ajuste de Stock.
  * 
  * Por qué zodResolver: SRS §6 Regla 1 exige validación estricta con DTOs.
  * Zod + react-hook-form garantiza tipado seguro end-to-end.

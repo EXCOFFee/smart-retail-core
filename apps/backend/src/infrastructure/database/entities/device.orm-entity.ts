@@ -91,7 +91,7 @@ export class DeviceOrmEntity {
    * Hash del token de autenticación del dispositivo
    * 
    * Por qué nullable: Dispositivos nuevos no tienen token hasta provisioning.
-   * El token se revoca (null) si el dispositivo está comprometido (CU-20).
+   * El token se revoca (null) si el dispositivo está comprometido.
    */
   @Column({ type: 'varchar', length: 255, nullable: true, name: 'device_token_hash' })
   deviceTokenHash?: string | null;

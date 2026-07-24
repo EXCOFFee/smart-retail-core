@@ -96,7 +96,7 @@ export interface IStockCachePort {
   /**
    * Intenta obtener un lock exclusivo sobre el stock de un producto.
    * 
-   * CRÍTICO para CU-05 (Race Condition):
+   * CRÍTICO para prevenir race conditions:
    * Solo un usuario puede tener el lock a la vez.
    * Si otro usuario intenta lockear, recibe success: false.
    * 
@@ -141,7 +141,7 @@ export interface IStockCachePort {
   /**
    * Invalida el cache de stock para un producto.
    * 
-   * Por qué: Después de un ajuste manual de inventario (CU-13),
+   * Por qué: Después de un ajuste manual de inventario,
    * hay que invalidar el cache para forzar recarga desde Postgres.
    * 
    * @param productId - ID del producto

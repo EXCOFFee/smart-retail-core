@@ -62,7 +62,7 @@ async function bootstrap(): Promise<void> {
 
   // ─────────────────────────────────────────────────────────────────────────
   // SWAGGER/OPENAPI: Documentación viva de la API
-  // Por qué: Mandatorio según AGENTS.md - La documentación debe estar
+  // Por qué: La documentación debe estar
   // siempre actualizada y accesible para desarrolladores y QA.
   // ─────────────────────────────────────────────────────────────────────────
   const swaggerConfig = new DocumentBuilder()

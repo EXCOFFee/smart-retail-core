@@ -5,7 +5,7 @@
  * Tests unitarios para el Value Object Money.
  * 
  * Por qué: Money es crítico para toda la lógica financiera.
- * Regla 8 del SRS: NUNCA usar float/double para dinero.
+ * NUNCA usar float/double para dinero.
  * ============================================================================
  */
 

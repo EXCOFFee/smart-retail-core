@@ -11,7 +11,7 @@
  * - Operaciones de billetera virtual
  * - Documentación Swagger completa
  * 
- * REGLA 8: Todos los valores monetarios en centavos (enteros)
+ * Todos los valores monetarios en centavos (enteros)
  * ============================================================================
  */
 

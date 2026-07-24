@@ -50,7 +50,7 @@ export class QrPayloadDto {
 /**
  * DTO para solicitar acceso a través de un dispositivo IoT.
  * 
- * Este es el punto de entrada del "Critical Path" (CU-01).
+ * Este es el punto de entrada del "Critical Path".
  */
 export class AccessRequestDto {
   @ApiProperty({

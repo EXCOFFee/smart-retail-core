@@ -2,7 +2,7 @@
  * ============================================================================
  * SMART_RETAIL - Rate Limiting E2E Tests
  * ============================================================================
- * Tests para el sistema de rate limiting (CU-16: Auditoría Eventos Sospechosos)
+ * Tests para el sistema de rate limiting (Auditoría Eventos Sospechosos)
  * 
  * ESCENARIOS TESTEADOS:
  * - Bloqueo después de exceder límite

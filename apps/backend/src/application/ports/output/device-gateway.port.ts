@@ -87,7 +87,7 @@ export interface IDeviceGatewayPort {
    * Envía un comando a un dispositivo y espera ACK.
    * 
    * CRÍTICO: El timeout debe ser configurable (HARDWARE_ACK_TIMEOUT).
-   * Si no hay ACK en tiempo, se considera fallo (CU-04).
+   * Si no hay ACK en tiempo, se considera fallo.
    * 
    * @param deviceId - ID del dispositivo
    * @param command - Comando a enviar
@@ -128,7 +128,7 @@ export interface IDeviceGatewayPort {
    * 1. sendCommand(OPEN)
    * 2. Espera evento DOOR_OPENED
    * 
-   * Si no llega confirmación, el Use Case debe iniciar rollback (CU-04).
+   * Si no llega confirmación, el Use Case debe iniciar rollback.
    * 
    * @param deviceId - ID del dispositivo
    * @param transactionId - ID de transacción (para correlación de logs)
@@ -144,7 +144,7 @@ export interface IDeviceGatewayPort {
   /**
    * Desconecta forzosamente un dispositivo.
    * 
-   * Por qué CU-20: Si un dispositivo está comprometido, lo desconectamos
+   * Por qué: Si un dispositivo está comprometido, lo desconectamos
    * y rechazamos cualquier intento de reconexión.
    * 
    * @param deviceId - ID del dispositivo

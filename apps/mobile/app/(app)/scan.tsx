@@ -4,7 +4,7 @@
  * ============================================================================
  * Pantalla de escaneo de códigos QR - CRITICAL PATH.
  * 
- * IMPLEMENTA: CU-01, CU-02, CU-03
+ *
  * 
  * FEATURES:
  * - react-native-vision-camera v4+ para escaneo rápido

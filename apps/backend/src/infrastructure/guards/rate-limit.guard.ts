@@ -4,7 +4,7 @@
  * ============================================================================
  * Guard de rate limiting para proteger endpoints críticos contra abuso.
  * 
- * IMPLEMENTA: CU-16 (Auditoría de Eventos Sospechosos)
+ * (Auditoría de Eventos Sospechosos)
  * 
  * ESTRATEGIA:
  * - Token bucket por IP/Usuario

@@ -5,7 +5,7 @@
  * Se lanza cuando un usuario intenta una operación sin saldo suficiente.
  * 
  * Mapeo HTTP: 402 Payment Required
- * Caso de Uso: CU-02 (Rechazo por Fondos Insuficientes)
+ * (Rechazo por Fondos Insuficientes)
  * ============================================================================
  */
 

@@ -218,7 +218,7 @@ export interface ITransactionRepository {
   /**
    * Busca transacciones pendientes que expiraron.
    * 
-   * Por qué CU-06: Para limpiar locks abandonados.
+   * Por qué: Para limpiar locks abandonados.
    * 
    * @param olderThanMinutes - Transacciones pendientes más viejas que esto
    */
@@ -227,7 +227,7 @@ export interface ITransactionRepository {
   /**
    * Obtiene resumen de transacciones por período (para Cierre de Caja).
    * 
-   * Por qué CU-14: Reporte Z diario.
+   * Por qué: Reporte Z diario.
    */
   getDailySummary(
     locationId: string,

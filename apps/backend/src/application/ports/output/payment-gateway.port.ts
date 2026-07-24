@@ -124,7 +124,7 @@ export interface IPaymentGatewayPort {
   /**
    * Consulta el estado de una transacción.
    * 
-   * Por qué: Para reconciliación cuando hay timeout (CU-03).
+   * Por qué: Para reconciliación cuando hay timeout.
    * 
    * @param externalId - ID de la transacción en la pasarela
    * @returns Estado actual

@@ -5,7 +5,7 @@
  * Se lanza cuando hay un conflicto de lock (otro usuario ya bloqueó el stock).
  * 
  * Mapeo HTTP: 409 Conflict
- * Caso de Uso: CU-05 (Race Condition - Guerra de Clics)
+ * (Race Condition - Guerra de Clics)
  * ============================================================================
  */
 

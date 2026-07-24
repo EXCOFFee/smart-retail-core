@@ -288,7 +288,7 @@ export class RedisStockCacheAdapter
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // DISTRIBUTED LOCKING (Soft Lock - CU-05)
+  // DISTRIBUTED LOCKING (Soft Lock)
   // ═══════════════════════════════════════════════════════════════════════════
 
   /**
@@ -436,7 +436,7 @@ export class RedisStockCacheAdapter
   /**
    * Invalida el cache de stock para un producto.
    * 
-   * Por qué: Después de un ajuste manual de inventario (CU-13),
+   * Por qué: Después de un ajuste manual de inventario,
    * hay que invalidar el cache para forzar recarga desde Postgres.
    * 
    * @param productId - ID del producto
@@ -449,7 +449,7 @@ export class RedisStockCacheAdapter
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // QR NONCE ANTI-REPLAY (CU-08)
+  // QR NONCE ANTI-REPLAY
   // ═══════════════════════════════════════════════════════════════════════════
 
   /**

@@ -58,7 +58,7 @@ import { GlobalExceptionFilter } from '@interfaces/http/filters';
 
     // ─────────────────────────────────────────────────────────────────────
     // SCHEDULE MODULE: Tareas programadas (Cron Jobs)
-    // Por qué: Reporte Z a las 00:00 (CU-14 - Cierre de Caja)
+    // Por qué: Reporte Z a las 00:00 (Cierre de Caja)
     // ─────────────────────────────────────────────────────────────────────
     ScheduleModule.forRoot(),
 
@@ -78,9 +78,9 @@ import { GlobalExceptionFilter } from '@interfaces/http/filters';
     // ─────────────────────────────────────────────────────────────────────
     AuthModule, // Autenticación JWT RS256 - GLOBAL
     HealthModule,
-    TasksModule, // Cron Jobs (Reporte Z - CU-14)
-    AccessModule, // Critical Path - CU-01
-    DeviceModule, // CU-10 - Provisioning de dispositivos
+    TasksModule, // Cron Jobs (Reporte Z)
+    AccessModule, // Critical Path
+    DeviceModule, // Provisioning de dispositivos
     ProductModule, // CRUD de productos
     TransactionModule, // Consulta de transacciones
     UserModule, // Gestión de usuarios

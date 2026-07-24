@@ -7,13 +7,13 @@
  * ARQUITECTURA: Capa de INTERFACES 🟢 (http/controllers)
  * 
  * NOTA IMPORTANTE: Las transacciones se CREAN a través del flujo de Access
- * (CU-01: Compra de acceso con QR). Este controlador es solo para CONSULTA.
+ * (Compra de acceso con QR). Este controlador es solo para CONSULTA.
  * 
  * Endpoints:
  * - GET /transactions - Listar transacciones (con filtros)
  * - GET /transactions/:id - Obtener transacción por ID
  * - GET /transactions/my - Mis transacciones (usuario actual)
- * - GET /transactions/summary - Resumen diario (Cierre de Caja - CU-14)
+ * - GET /transactions/summary - Resumen diario (Cierre de Caja)
  * 
  * Seguridad:
  * - Todos los endpoints requieren autenticación JWT
@@ -245,11 +245,11 @@ export class TransactionController {
   }
 
   // ─────────────────────────────────────────────────────────────────────────
-  // DAILY SUMMARY (CU-14 - CIERRE DE CAJA)
+  // DAILY SUMMARY (CIERRE DE CAJA)
   // ─────────────────────────────────────────────────────────────────────────
 
   /**
-   * Obtiene el resumen diario de transacciones para Cierre de Caja (CU-14).
+   * Obtiene el resumen diario de transacciones para Cierre de Caja.
    * 
    * @param query - Ubicación y fecha
    * @returns Resumen del día

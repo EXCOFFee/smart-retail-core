@@ -6,7 +6,7 @@
  * 
  * ARQUITECTURA: Módulo de NEGOCIO (composición de capas)
  * 
- * NOTA: Las transacciones se CREAN a través del AccessModule (CU-01).
+ * NOTA: Las transacciones se CREAN a través del AccessModule.
  * Este módulo es principalmente para CONSULTA y reportes.
  * 
  * Este módulo:

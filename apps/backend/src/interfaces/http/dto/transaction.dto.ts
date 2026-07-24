@@ -6,7 +6,7 @@
  * 
  * ARQUITECTURA: Capa de INTERFACES 🟢 (http/dto)
  * 
- * NOTA: Las transacciones se crean a través del flujo de Access (CU-01),
+ * NOTA: Las transacciones se crean a través del flujo de Access,
  * no directamente por esta API. Estos endpoints son solo para consulta.
  * ============================================================================
  */
@@ -225,7 +225,7 @@ export class TransactionListResponseDto {
 // ─────────────────────────────────────────────────────────────────────────────
 
 /**
- * DTO para resumen diario de transacciones (Cierre de Caja - CU-14).
+ * DTO para resumen diario de transacciones (Cierre de Caja).
  */
 export class DailySummaryQueryDto {
   @ApiProperty({

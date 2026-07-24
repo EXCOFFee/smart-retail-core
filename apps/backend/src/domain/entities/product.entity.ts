@@ -238,7 +238,7 @@ export class Product {
   /**
    * Actualiza el precio del producto.
    * 
-   * NOTA según CU-19: Los precios se "congelan" al momento del escaneo.
+   * NOTA: Los precios se "congelan" al momento del escaneo.
    * Este método solo afecta a futuras transacciones.
    * 
    * @param newPrice - Nuevo precio

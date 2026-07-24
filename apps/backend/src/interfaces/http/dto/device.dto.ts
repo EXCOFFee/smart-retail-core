@@ -2,7 +2,7 @@
  * ============================================================================
  * SMART_RETAIL - Device Provision DTO
  * ============================================================================
- * DTOs para el endpoint de provisioning de dispositivos (CU-10).
+ * DTOs para el endpoint de provisioning de dispositivos.
  * 
  * ARQUITECTURA: Capa de INTERFACES 🟢 (http/dto)
  * 

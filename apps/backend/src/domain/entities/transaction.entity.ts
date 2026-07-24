@@ -17,7 +17,7 @@ import { Money } from '@domain/value-objects/money.value-object';
  * 
  * Flujo normal: PENDING -> PAID -> COMPLETED
  * Flujo fallido: PENDING -> FAILED
- * Flujo hardware: PENDING -> PAID -> REFUNDED_HW_FAILURE (CU-04)
+ * Flujo hardware: PENDING -> PAID -> REFUNDED_HW_FAILURE
  */
 export enum TransactionStatus {
   /** Transacción creada, esperando pago */
@@ -30,7 +30,7 @@ export enum TransactionStatus {
   COMPLETED = 'COMPLETED',
   /** Pago rechazado por pasarela */
   FAILED = 'FAILED',
-  /** Reembolsado por fallo de hardware (CU-04) */
+  /** Reembolsado por fallo de hardware */
   REFUNDED_HW_FAILURE = 'REFUNDED_HW_FAILURE',
   /** Reembolsado por solicitud del admin */
   REFUNDED_MANUAL = 'REFUNDED_MANUAL',
@@ -88,7 +88,7 @@ export class Transaction {
 
   /**
    * Monto de la transacción
-   * Por qué Money VO: El monto se "congela" al momento del escaneo (CU-19).
+   * Por qué Money VO: El monto se "congela" al momento del escaneo.
    */
   readonly amount: Money;
 
@@ -291,7 +291,7 @@ export class Transaction {
   }
 
   /**
-   * Registra reembolso por fallo de hardware (CU-04).
+   * Registra reembolso por fallo de hardware.
    */
   markRefundedHardwareFailure(): void {
     this.assertStatus([TransactionStatus.PAID]);

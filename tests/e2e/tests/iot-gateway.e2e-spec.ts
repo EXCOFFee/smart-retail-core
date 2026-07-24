@@ -5,9 +5,9 @@
  * Tests para el gateway WebSocket que controla dispositivos IoT.
  * 
  * IMPLEMENTA:
- * - CU-04: Reembolso por fallo de hardware
- * - CU-09: Reconexión WebSocket
- * - CU-18: Alerta de puerta forzada
+ * Reembolso por fallo de hardware
+ * Reconexión WebSocket
+ * Alerta de puerta forzada
  * ============================================================================
  */
 
@@ -83,7 +83,7 @@ describe('IoT WebSocket Gateway (E2E with Mocks)', () => {
   });
 
   // ─────────────────────────────────────────────────────────────────────────
-  // CU-04: Reembolso por Fallo de Hardware
+  // Reembolso por Fallo de Hardware
   // ─────────────────────────────────────────────────────────────────────────
   describe('CU-04: Hardware Failure Refund', () => {
     it('should handle command timeout (device not responding)', async () => {
@@ -143,7 +143,7 @@ describe('IoT WebSocket Gateway (E2E with Mocks)', () => {
   });
 
   // ─────────────────────────────────────────────────────────────────────────
-  // CU-09: Reconexión WebSocket
+  // Reconexión WebSocket
   // ─────────────────────────────────────────────────────────────────────────
   describe('CU-09: WebSocket Reconnection', () => {
     it('should track device reconnection attempts', async () => {
@@ -199,7 +199,7 @@ describe('IoT WebSocket Gateway (E2E with Mocks)', () => {
   });
 
   // ─────────────────────────────────────────────────────────────────────────
-  // CU-18: Alerta de Puerta Forzada
+  // Alerta de Puerta Forzada
   // ─────────────────────────────────────────────────────────────────────────
   describe('CU-18: Forced Entry Detection (Security Breach)', () => {
     it('should detect sensor activation without prior command', async () => {

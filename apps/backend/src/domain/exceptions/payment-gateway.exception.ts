@@ -6,7 +6,6 @@
  * 
  * Mapeo HTTP: 502 Bad Gateway (para errores de conexión)
  *             402 Payment Required (para rechazos)
- * Caso de Uso: CU-02, CU-03
  * ============================================================================
  */
 

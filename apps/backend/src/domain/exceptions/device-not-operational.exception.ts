@@ -5,7 +5,7 @@
  * Se lanza cuando se intenta operar un dispositivo que no está disponible.
  * 
  * Mapeo HTTP: 503 Service Unavailable
- * Caso de Uso: CU-12 (Modo Mantenimiento), CU-20 (Dispositivo Comprometido)
+ * (Modo Mantenimiento), (Dispositivo Comprometido)
  * ============================================================================
  */
 

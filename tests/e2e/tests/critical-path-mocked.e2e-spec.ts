@@ -4,7 +4,7 @@
  * ============================================================================
  * Tests de integración para el flujo crítico: QR → Backend → Device
  * 
- * IMPLEMENTA: CU-01, CU-02, CU-05, CU-08, CU-18
+ *
  * 
  * ESTRATEGIA:
  * - Usa MockServer para simular el backend
@@ -64,7 +64,7 @@ describe('Critical Path: Access Flow (E2E with Mocks)', () => {
   });
 
   // ─────────────────────────────────────────────────────────────────────────
-  // CU-01: Proceso de Compra Exitoso (Happy Path)
+  // Proceso de Compra Exitoso (Happy Path)
   // ─────────────────────────────────────────────────────────────────────────
   describe('CU-01: Proceso de Compra Exitoso', () => {
     it('should process access successfully and return transaction ID', async () => {
@@ -134,7 +134,7 @@ describe('Critical Path: Access Flow (E2E with Mocks)', () => {
   });
 
   // ─────────────────────────────────────────────────────────────────────────
-  // CU-02: Rechazo por Fondos Insuficientes
+  // Rechazo por Fondos Insuficientes
   // ─────────────────────────────────────────────────────────────────────────
   describe('CU-02: Rechazo por Fondos Insuficientes', () => {
     it('should reject with 402 when user has insufficient balance', async () => {
@@ -206,7 +206,7 @@ describe('Critical Path: Access Flow (E2E with Mocks)', () => {
   });
 
   // ─────────────────────────────────────────────────────────────────────────
-  // CU-05: Race Condition (Guerra de Clics)
+  // Race Condition (Guerra de Clics)
   // ─────────────────────────────────────────────────────────────────────────
   describe('CU-05: Race Condition Handling', () => {
     it('should reject concurrent requests for last unit of product', async () => {
@@ -273,7 +273,7 @@ describe('Critical Path: Access Flow (E2E with Mocks)', () => {
   });
 
   // ─────────────────────────────────────────────────────────────────────────
-  // CU-08: QR Expirado (Replay Attack Prevention)
+  // QR Expirado (Replay Attack Prevention)
   // ─────────────────────────────────────────────────────────────────────────
   describe('CU-08: Replay Attack Prevention', () => {
     it('should reject expired QR codes (> 60s old)', async () => {
@@ -339,7 +339,7 @@ describe('Critical Path: Access Flow (E2E with Mocks)', () => {
   });
 
   // ─────────────────────────────────────────────────────────────────────────
-  // CU-03: Sin Stock
+  // Sin Stock
   // ─────────────────────────────────────────────────────────────────────────
   describe('CU-03: Out of Stock Handling', () => {
     it('should reject with 409 when product has no stock', async () => {

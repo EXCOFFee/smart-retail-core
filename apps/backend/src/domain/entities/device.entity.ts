@@ -17,9 +17,9 @@ export enum DeviceStatus {
   ONLINE = 'ONLINE',
   /** Dispositivo desconectado (sin heartbeat) */
   OFFLINE = 'OFFLINE',
-  /** Dispositivo en mantenimiento (CU-12) */
+  /** Dispositivo en mantenimiento */
   MAINTENANCE = 'MAINTENANCE',
-  /** Dispositivo robado o comprometido (CU-20) */
+  /** Dispositivo robado o comprometido */
   COMPROMISED = 'COMPROMISED',
 }
 
@@ -88,7 +88,7 @@ export class Device {
   /**
    * Token de autenticación del dispositivo (hash)
    * Por qué: Cada dispositivo tiene su propia identidad criptográfica.
-   * Si se compromete, se revoca solo ese dispositivo (CU-20).
+   * Si se compromete, se revoca solo ese dispositivo.
    */
   private _deviceTokenHash: string | null;
 
@@ -203,7 +203,7 @@ export class Device {
   }
 
   /**
-   * Pone el dispositivo en modo mantenimiento (CU-12).
+   * Pone el dispositivo en modo mantenimiento.
    * 
    * Por qué: Bloquea todas las transacciones en ese dispositivo
    * mientras se realiza mantenimiento físico.
@@ -223,7 +223,7 @@ export class Device {
   }
 
   /**
-   * Marca el dispositivo como comprometido (CU-20 - Kill Switch).
+   * Marca el dispositivo como comprometido (Kill Switch).
    * 
    * Por qué: Un dispositivo robado debe ser bloqueado inmediatamente.
    * Esta operación también revoca el token de autenticación.

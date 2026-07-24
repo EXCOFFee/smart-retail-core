@@ -2,7 +2,7 @@
  * ============================================================================
  * SMART_RETAIL - Device Provision Use Case (Input Port)
  * ============================================================================
- * Puerto de entrada para el caso de uso CU-10: Alta de Nuevo Dispositivo.
+ * Puerto de entrada para el caso de uso: Alta de Nuevo Dispositivo.
  * 
  * ARQUITECTURA: Capa de APLICACIÓN 🟠 (ports/input)
  * 
@@ -81,7 +81,7 @@ export interface DeviceProvisionOutput {
 /**
  * Puerto de entrada para el caso de uso de Provisioning de Dispositivos.
  * 
- * Flujo (CU-10):
+ * Flujo:
  * 1. Admin ingresa datos del dispositivo en Panel Web
  * 2. Backend valida que no exista otro dispositivo con mismo serialNumber
  * 3. Backend genera credenciales únicas (API Key + Secret)

@@ -4,7 +4,7 @@
  * ============================================================================
  * Cola de peticiones fallidas para sincronización posterior.
  * 
- * IMPLEMENTA: CU-07 (Anti-Fraude Offline) y Resiliencia HU-04
+ * (Anti-Fraude Offline) y Resiliencia HU-04
  * 
  * ESTRATEGIA:
  * - Almacena intentos fallidos de acceso (NO autoriza offline)

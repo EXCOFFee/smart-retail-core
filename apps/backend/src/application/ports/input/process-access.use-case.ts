@@ -33,7 +33,7 @@ export interface ProcessAccessInput {
 
   /**
    * Payload del QR escaneado (para validar timestamp y nonce)
-   * Por qué: Previene replay attacks (CU-08)
+   * Por qué: Previene replay attacks
    */
   qrPayload?: {
     timestamp: Date;

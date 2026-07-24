@@ -59,7 +59,7 @@ interface UsedNonce {
 
 /**
  * Configuración de comportamiento del mock (para simular fallos).
- * CU-03: Simula timeouts de pasarela de pago.
+ * Simula timeouts de pasarela de pago.
  */
 interface MockBehavior {
   /** Habilita timeout en la pasarela de pagos */
@@ -89,7 +89,7 @@ let currentBehavior: MockBehavior = { ...defaultBehavior };
 
 /**
  * Registro de transacciones en estado pendiente (para cleanup).
- * CU-03: Necesario para detectar y limpiar locks huérfanos.
+ * Necesario para detectar y limpiar locks huérfanos.
  */
 interface PendingTransaction {
   transactionId: string;
@@ -198,7 +198,7 @@ const activeLocks: Map<string, { userId: string; expiresAt: number }> = new Map(
 const usedNonces: UsedNonce[] = [];
 const transactions: Map<string, Transaction> = new Map();
 
-// CU-03: Transacciones pendientes (esperando confirmación de pasarela)
+// Transacciones pendientes (esperando confirmación de pasarela)
 const pendingTransactions: Map<string, PendingTransaction> = new Map();
 
 // Tokens válidos (simula JWT)
@@ -276,7 +276,7 @@ function releaseLock(productId: string): void {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// CU-03: PAYMENT GATEWAY SIMULATION
+// PAYMENT GATEWAY SIMULATION
 // ─────────────────────────────────────────────────────────────────────────────
 
 /**
@@ -327,7 +327,7 @@ async function simulatePaymentGateway(
 }
 
 /**
- * Cleanup de locks huérfanos (CU-03: Rollback automático).
+ * Cleanup de locks huérfanos (Rollback automático).
  * Se ejecuta periódicamente o al detectar timeout.
  */
 function cleanupOrphanedLocks(): void {
@@ -441,7 +441,7 @@ async function handleProcessAccessAsync(
     };
   }
   
-  // CU-08: Verificar timestamp (QR expirado si > 60s)
+  // Verificar timestamp (QR expirado si > 60s)
   const now = Date.now();
   if (now - payload.timestamp > 60000) {
     return {
@@ -450,7 +450,7 @@ async function handleProcessAccessAsync(
     };
   }
   
-  // CU-08: Verificar nonce (replay attack)
+  // Verificar nonce (replay attack)
   if (isNonceUsed(payload.nonce)) {
     return {
       status: 403,
@@ -485,7 +485,7 @@ async function handleProcessAccessAsync(
     };
   }
   
-  // CU-05: Verificar stock y lock (race condition)
+  // Verificar stock y lock (race condition)
   if (product.stock <= 0) {
     return {
       status: 409,
@@ -501,7 +501,7 @@ async function handleProcessAccessAsync(
     };
   }
   
-  // CU-02: Verificar saldo
+  // Verificar saldo
   if (user.walletBalance < product.price) {
     releaseLock(productId);
     return {
@@ -516,7 +516,7 @@ async function handleProcessAccessAsync(
   // Generar ID de transacción
   const transactionId = generateTransactionId();
   
-  // CU-03: Registrar como transacción pendiente (antes de llamar a pasarela)
+  // Registrar como transacción pendiente (antes de llamar a pasarela)
   const pendingTx: PendingTransaction = {
     transactionId,
     productId: product.id,
@@ -526,7 +526,7 @@ async function handleProcessAccessAsync(
   };
   pendingTransactions.set(transactionId, pendingTx);
 
-  // CU-03: Llamar a pasarela de pagos (puede fallar/timeout)
+  // Llamar a pasarela de pagos (puede fallar/timeout)
   try {
     const gatewayResult = await simulatePaymentGateway(
       user.id,
@@ -584,7 +584,7 @@ async function handleProcessAccessAsync(
       },
     };
   } catch (error) {
-    // CU-03: Timeout o error de red en pasarela
+    // Timeout o error de red en pasarela
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     
     if (currentBehavior.autoRollbackOnTimeout) {
@@ -618,7 +618,7 @@ async function handleProcessAccessAsync(
         statusCode: isTimeout ? 504 : 502,
         transactionId,
         shouldRetry: isNetworkError,
-        // CU-03: Información para el cliente sobre el estado
+        // Información para el cliente sobre el estado
         lockReleased: currentBehavior.autoRollbackOnTimeout,
         retryAfterSeconds: isTimeout ? 30 : 5,
       },
@@ -669,7 +669,7 @@ export class MockServer {
 
   /**
    * Configura el comportamiento del mock (para simular fallos).
-   * CU-03: Usa esto para simular timeouts de pasarela de pago.
+   * Usa esto para simular timeouts de pasarela de pago.
    * 
    * @example
    * // Simular timeout de Mercado Pago
@@ -718,7 +718,7 @@ export class MockServer {
         });
       });
 
-      // CU-03: Iniciar limpieza periódica de locks huérfanos (cada 10s)
+      // Iniciar limpieza periódica de locks huérfanos (cada 10s)
       this.cleanupInterval = setInterval(() => {
         cleanupOrphanedLocks();
       }, 10000);
@@ -830,7 +830,7 @@ export class MockServer {
           const productId = url.split('/')[4];
           result = handleGetProductStock(productId);
         } else if (url === '/api/v1/access/process' && method === 'POST') {
-          // handleProcessAccess devuelve una promesa ahora (CU-03)
+          // handleProcessAccess devuelve una promesa ahora
           result = await handleProcessAccess(user, parsedBody);
         } else if (url.match(/^\/api\/v1\/transactions\/[\w-]+$/) && method === 'GET') {
           const transactionId = url.split('/')[4];

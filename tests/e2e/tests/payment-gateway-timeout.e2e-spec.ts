@@ -1,6 +1,6 @@
 /**
  * ============================================================================
- * SMART_RETAIL - Payment Gateway Timeout E2E Tests (CU-03)
+ * SMART_RETAIL - Payment Gateway Timeout E2E Tests
  * ============================================================================
  * Tests para simular y manejar timeouts de pasarelas de pago.
  * 

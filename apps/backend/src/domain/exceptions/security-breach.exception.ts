@@ -5,7 +5,7 @@
  * Se lanza cuando se detecta un intento de violación de seguridad.
  * 
  * Mapeo HTTP: 403 Forbidden
- * Caso de Uso: CU-18 (Puerta Forzada), CU-20 (Dispositivo Comprometido)
+ * (Puerta Forzada), (Dispositivo Comprometido)
  * ============================================================================
  */
 

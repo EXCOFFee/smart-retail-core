@@ -7,7 +7,7 @@
  * ARQUITECTURA: Capa de INTERFACES 🟢 (http/controllers)
  * 
  * Endpoints:
- * - POST /devices/provision - Alta de nuevo dispositivo (CU-10)
+ * - POST /devices/provision - Alta de nuevo dispositivo
  * - GET /devices - Lista de dispositivos
  * - GET /devices/:id - Detalle de dispositivo
  * - PATCH /devices/:id/status - Cambiar estado (mantenimiento, etc.)
@@ -79,7 +79,7 @@ export class DeviceController {
   ) {}
 
   /**
-   * Provisiona un nuevo dispositivo IoT (CU-10).
+   * Provisiona un nuevo dispositivo IoT.
    * 
    * Este endpoint genera credenciales únicas (API Key + Secret)
    * que el dispositivo usará para autenticarse vía WebSocket.
@@ -245,7 +245,7 @@ El admin DEBE copiarlo inmediatamente.
   }
 
   /**
-   * Cambia el estado de un dispositivo (CU-12, CU-20).
+   * Cambia el estado de un dispositivo.
    * 
    * @param id - ID del dispositivo
    * @param status - Nuevo estado

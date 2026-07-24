@@ -10,7 +10,7 @@
  * comparación) y debe garantizar precisión. Encapsular esto evita errores
  * de punto flotante dispersos por todo el código.
  * 
- * ⚠️ REGLA 8 (AGENTS.md): Prohibido float/double para dinero.
+ * ⚠️ Prohibido float/double para dinero.
  * Internamente trabajamos con centavos (enteros) para evitar precisión.
  * ============================================================================
  */

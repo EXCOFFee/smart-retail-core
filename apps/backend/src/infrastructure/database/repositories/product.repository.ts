@@ -7,7 +7,7 @@
  * ARQUITECTURA: Capa de INFRAESTRUCTURA 🔵 (adapters/database)
  * 
  * NOTA ESPECIAL: Este repositorio implementa Optimistic Locking para
- * actualizaciones de stock (Regla 4 del SRS).
+ * actualizaciones de stock.
  * ============================================================================
  */
 
@@ -117,7 +117,7 @@ export class ProductRepository implements IProductRepository {
   /**
    * Actualiza el stock con Optimistic Locking.
    * 
-   * CRÍTICO: Este método implementa la Regla 4 del SRS.
+   * CRÍTICO: Este método implementa optimistic locking.
    * Solo actualiza si la versión coincide, previniendo race conditions.
    * 
    * Por qué Optimistic Locking:

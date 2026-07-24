@@ -2,7 +2,7 @@
  * ============================================================================
  * SMART_RETAIL Admin Web - Devices Page
  * ============================================================================
- * Gestión de dispositivos IoT: Lista, Provisioning (CU-10), Status (CU-12, CU-20).
+ * Gestión de dispositivos IoT: Lista, Provisioning, Status.
  * 
  * Por qué zodResolver: SRS §6 Regla 1 exige validación estricta.
  * Garantiza que los dispositivos se registren con datos válidos.

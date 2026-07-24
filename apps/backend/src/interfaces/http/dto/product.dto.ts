@@ -11,7 +11,7 @@
  * - Optimistic Locking para actualización de stock
  * - Documentación Swagger completa
  * 
- * REGLA 8: Todos los valores monetarios en centavos (enteros)
+ * Todos los valores monetarios en centavos (enteros)
  * ============================================================================
  */
 
