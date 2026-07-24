@@ -114,10 +114,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial project setup
 - SRS documentation (v5.5)
-- AGENTS.md for AI guidance
 
 ---
 
-[Unreleased]: https://github.com/your-org/smartRetail/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/your-org/smartRetail/compare/v0.0.1...v0.1.0
-[0.0.1]: https://github.com/your-org/smartRetail/releases/tag/v0.0.1
+[Unreleased]: https://github.com/EXCOFFee/smart-retail-core/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/EXCOFFee/smart-retail-core/compare/v0.0.1...v0.1.0
+[0.0.1]: https://github.com/EXCOFFee/smart-retail-core/releases/tag/v0.0.1
